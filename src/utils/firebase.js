@@ -56,6 +56,10 @@ export const signOut = () => {
   return firebaseSignOut(auth);
 };
 
+export const getUser = () => {
+  return auth.currentUser;
+};
+
 export const checkUserTokens = async () => {
   const user = auth.currentUser;
   if (!user) {
