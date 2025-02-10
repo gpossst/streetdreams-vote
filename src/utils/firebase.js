@@ -41,11 +41,15 @@ export const signInWithGoogle = async () => {
     }
 
     await setDoc(userDocRef, {
+      userId: result.user.uid,
       votesData: {
         votes: 10,
         lastUpdated: new Date(),
       },
-      userId: result.user.uid,
+      competitionData: {
+        wins: 0,
+        winningImages: [],
+      },
     });
   } catch (error) {
     console.error("Error during sign in:", error);
