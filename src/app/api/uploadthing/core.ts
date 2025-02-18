@@ -1,6 +1,9 @@
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
 import { adminAuth } from "@/utils/firebase-admin";
+import { db } from "@/utils/firebase";
+import { doc, setDoc } from "firebase/firestore";
+import { canUploadPhoto } from "@/utils/firebase";
 
 const f = createUploadthing();
 
@@ -27,8 +30,17 @@ export const ourFileRouter = {
       }
     })
     .onUploadComplete(async ({ metadata, file }) => {
-      console.log("Upload complete for userId:", metadata.userId);
-      console.log("file url", file.url);
+      const canUpload = await canUploadPhoto(metadata.userId);
+      if (!canUpload) return;
+      const userDocRef = doc(db, "photos", file.key);
+      await setDoc(userDocRef, {
+        fileKey: file.key,
+        fileName: file.name,
+        fileUrl: file.url,
+        uploadedBy: metadata.userId,
+        uploadedAt: new Date(),
+        votes: 0,
+      });
       return { uploadedBy: metadata.userId };
     }),
 } satisfies FileRouter;
