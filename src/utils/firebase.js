@@ -16,7 +16,6 @@ import {
   Timestamp,
   getDoc,
   setDoc,
-  updateDoc,
 } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
@@ -144,14 +143,6 @@ export const canUploadPhoto = async (userId) => {
   return querySnapshot.size === 0;
 };
 
-export const getUserVotes = async (userId) => {
-  const userDocRef = doc(db, "users", userId);
-  const userDocSnap = await getDoc(userDocRef);
-  if (userDocSnap.exists()) {
-    return userDocSnap.data().votesData.votes;
-  }
-};
-
 export const getMonthPhotos = async () => {
   const collectionRef = collection(db, "photos");
   const currentDate = new Date();
@@ -176,56 +167,75 @@ export const getMonthPhotos = async () => {
 };
 
 export const getVotes = async (userId) => {
-  const userDocRef = doc(db, "users", userId);
+  const userDocRef = doc(db, "voteStats", userId);
   const userDocSnap = await getDoc(userDocRef);
   if (userDocSnap.exists()) {
-    const lastUpdated = userDocSnap.data().votesData.lastUpdated.toDate();
+    const lastUpdated = userDocSnap.data().lastUpdated.toDate();
     const currentDate = new Date();
     if (
       lastUpdated.getFullYear() === currentDate.getFullYear() &&
       lastUpdated.getMonth() === currentDate.getMonth()
     ) {
-      return userDocSnap.data().votesData.photoVotes;
+      return userDocSnap.data().votes;
     }
-    return [];
   }
+  return [];
 };
 
 export const submitVotes = async (userId, votes) => {
-  const userDocRef = doc(db, "users", userId);
-  await updateDoc(userDocRef, {
-    "votesData.photoVotes": votes,
-    "votesData.lastUpdated": new Date(),
-  });
+  // Update public vote counts
+  const votesRef = doc(db, "voteStats", userId);
+  await setDoc(
+    votesRef,
+    { votes, lastUpdated: new Date(), userId },
+    { merge: true }
+  );
 };
 
 export const getTopVotedPhotos = async () => {
-  // Get all users
-  const usersRef = collection(db, "users");
-  const usersSnapshot = await getDocs(usersRef);
+  const votesRef = collection(db, "voteStats");
+  const votesSnapshot = await getDocs(votesRef);
 
-  // Create a map to store total votes for each photo
-  const photoVotesMap = {};
+  // Create a map to sum up all votes for each photo
+  const totalVotes = {};
 
-  // Iterate through each user
-  usersSnapshot.forEach((userDoc) => {
-    const userData = userDoc.data();
-    const photoVotes = userData.votesData?.photoVotes || [];
-
-    // Add each vote to the total
-    photoVotes.forEach((photoId) => {
-      photoVotesMap[photoId] = (photoVotesMap[photoId] || 0) + 1;
+  // Iterate through all documents in voteStats
+  votesSnapshot.forEach((doc) => {
+    const votes = doc.data().votes || {};
+    // Sum up votes for each photo
+    Object.entries(votes).forEach(([photoId, voteCount]) => {
+      totalVotes[photoId] = (totalVotes[photoId] || 0) + voteCount;
     });
   });
 
-  // Convert the map to an array of [photoId, votes] pairs
-  const photoVotesArray = Object.entries(photoVotesMap);
-
-  // Sort the array by votes in descending order
+  // Convert to array and sort by vote count
+  const photoVotesArray = Object.entries(totalVotes);
   photoVotesArray.sort((a, b) => b[1] - a[1]);
 
-  // Get the top 3 photos
-  const topThreePhotos = photoVotesArray.slice(0, 3);
+  // Get top 3 photo IDs and their votes
+  const top3 = photoVotesArray.slice(0, 3);
 
-  return topThreePhotos;
+  // Fetch the actual photo objects
+  const photosWithVotes = await Promise.all(
+    top3.map(async ([fileKey, votes]) => {
+      const photoRef = doc(db, "photos", fileKey);
+      const photoDoc = await getDoc(photoRef);
+      if (photoDoc.exists()) {
+        return {
+          photo: photoDoc.data(),
+          votes: votes,
+        };
+      }
+      return null;
+    })
+  );
+
+  // Filter out any null values in case some photos weren't found
+  return photosWithVotes.filter((item) => item !== null);
+};
+
+export const getUserNameById = async (userId) => {
+  const userDocRef = doc(db, "users", userId);
+  const userDocSnap = await getDoc(userDocRef);
+  return userDocSnap.data().displayName;
 };

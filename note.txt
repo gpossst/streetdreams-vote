@@ -1,0 +1,3 @@
+TODO:
+Figure out why name is not showing up in results page
+Fix votes ordering on results page (first and second are flipped)

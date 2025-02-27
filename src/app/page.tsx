@@ -7,14 +7,15 @@ import { onAuthStateChanged } from "firebase/auth";
 import Upload from "@/components/Upload";
 import Vote from "@/components/Vote";
 import Progress from "@/components/Home/Progress";
+import Results from "@/components/Results";
+
 export default function Home() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [voteState, setVoteState] = useState(0);
 
   const getVoteState = () => {
-    const testDate = new Date("2025-02-1");
-    const currentDate = testDate || new Date();
+    const currentDate = new Date();
     const currentDay = currentDate.getDate();
 
     if (currentDay >= 1 && currentDay <= 10) {
@@ -46,15 +47,37 @@ export default function Home() {
       ) : user ? (
         <div className="flex flex-col pt-20 items-center h-screen">
           <Progress />
-          <div className="absolute flex gap-8 top-0 right-0">
+          <div className="absolute items-center flex gap-2 md:flex-col top-4 right-4">
             <h1>{user.displayName}</h1>
-            <button onClick={() => signOut(auth)}>Sign out</button>
+            <button
+              className="bg-foreground text-sm text-background rounded-md p-2"
+              onClick={() => signOut(auth)}
+            >
+              Sign out
+            </button>
           </div>
           <Upload voteEnabled={voteState} />
-          <Vote voteEnabled={voteState === 1} user={user} />
+          <Vote voteEnabled={voteState} user={user} />
+          <Results voteEnabled={voteState} />
         </div>
       ) : (
-        <button onClick={signInWithGoogle}>Sign in with Google</button>
+        <div className="flex flex-col gap-4 pt-20 items-center justify-center pb-20 h-screen">
+          <div className="flex flex-col gap-2 items-center text-center">
+            <h1 className="text-2xl font-bold">
+              Welcome to the Virginia Tech Photography Club&apos;s Monthly Photo
+              Contest!
+            </h1>
+            <h3 className="text-lg">
+              Please sign in to upload photos and vote for your favorite photos.
+            </h3>
+          </div>
+          <button
+            className="bg-foreground text-sm text-background rounded-md p-2"
+            onClick={signInWithGoogle}
+          >
+            Sign in with Google
+          </button>
+        </div>
       )}
     </div>
   );

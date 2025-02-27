@@ -2,7 +2,7 @@ import { getMonthPhotos, getVotes, submitVotes } from "@/utils/firebase";
 import React, { useEffect, useState } from "react";
 import VoteTile from "./Vote/VoteTile";
 import { User } from "firebase/auth";
-function Vote({ voteEnabled, user }: { voteEnabled: boolean; user: User }) {
+function Vote({ voteEnabled, user }: { voteEnabled: number; user: User }) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [photos, setPhotos] = useState<any[]>([]);
   const [votes, setVotes] = useState({});
@@ -11,7 +11,7 @@ function Vote({ voteEnabled, user }: { voteEnabled: boolean; user: User }) {
 
   const fetchVotes = async () => {
     const votes = await getVotes(user.uid);
-    setVotes(votes);
+    setVotes(votes || {});
   };
 
   useEffect(() => {
@@ -28,13 +28,17 @@ function Vote({ voteEnabled, user }: { voteEnabled: boolean; user: User }) {
     setIsSubmitted(true);
   };
 
+  if (voteEnabled === 2) {
+    return null;
+  }
+
   return (
-    <div className="w-full">
+    <div className={`w-full ${voteEnabled === 1 ? "pt-12" : ""}`}>
       <div className="flex flex-wrap gap-4 justify-center">
         {photos.map((photo, index) => (
           <div key={index}>
             <VoteTile
-              voteEnabled={voteEnabled}
+              voteEnabled={voteEnabled === 1}
               photo={photo}
               votes={votes}
               setVotes={setVotes}
@@ -42,8 +46,12 @@ function Vote({ voteEnabled, user }: { voteEnabled: boolean; user: User }) {
           </div>
         ))}
       </div>
-      {Object.keys(votes).length > 0 && voteEnabled && (
-        <button onClick={handleSubmitVotes} disabled={isSubmitting}>
+      {Object.keys(votes).length > 0 && voteEnabled === 1 && (
+        <button
+          className="absolute shadow-lg hover:bg-[#CC444B] hover:text-foreground transition-all duration-300 bottom-8 left-1/2 transform -translate-x-1/2 bg-foreground text-background rounded-lg p-2 items-center justify-center"
+          onClick={handleSubmitVotes}
+          disabled={isSubmitting}
+        >
           {isSubmitting
             ? "Submitting..."
             : isSubmitted

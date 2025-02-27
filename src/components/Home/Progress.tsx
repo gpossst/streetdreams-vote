@@ -35,7 +35,7 @@ export default function Progress() {
   };
 
   return (
-    <div className="flex w-3/4 sm:w-3/4 top-12 items-center justify-center absolute text-background sm:top-6 rounded-lg overflow-hidden shadow-lg gap-1">
+    <div className="flex w-3/4 sm:w-3/4 top-20 items-center justify-center absolute text-background md:top-6 rounded-lg overflow-hidden shadow-lg gap-1">
       {/* Left */}
       <div className="text-lg justify-center xl:justify-between items-center flex text-start flex-[2] py-4 pr-2 pl-4 font-semibold bg-foreground rounded-l-lg rounded-r-sm">
         <LuSend />

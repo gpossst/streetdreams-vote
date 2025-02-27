@@ -13,7 +13,7 @@ export default function Image({ photo }: { photo: any }) {
           alt={photo.fileName}
           width={400}
           height={400}
-          className="w-full aspect-square object-cover"
+          className="w-full aspect-square object-cover rounded-sm"
         />
       </div>
 

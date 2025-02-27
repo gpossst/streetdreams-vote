@@ -83,7 +83,7 @@ export default function Upload({ voteEnabled }: { voteEnabled: number }) {
     <div className="flex items-center bg-background justify-center w-full max-w-md mx-auto p-6 space-y-4">
       {canUpload ? (
         <div className="flex w-full">
-          <label className="bg-foreground cursor-pointer flex hover:bg-[#2A2B32] flex-1 justify-between items-center rounded-l-lg p-4 transition-colors duration-300">
+          <label className="bg-foreground cursor-pointer flex hover:bg-[#2A2B32] hover:text-white flex-1 justify-between items-center rounded-l-lg p-4 transition-colors duration-300">
             <FaCloudUploadAlt className="text-2xl text-background" />
 
             <input
