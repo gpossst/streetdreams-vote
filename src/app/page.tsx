@@ -8,6 +8,7 @@ import Upload from "@/components/Upload";
 import Vote from "@/components/Vote";
 import Progress from "@/components/Home/Progress";
 import Results from "@/components/Results";
+import Image from "next/image";
 
 export default function Home() {
   const [user, setUser] = useState<User | null>(null);
@@ -39,6 +40,26 @@ export default function Home() {
     getVoteState();
   }, [voteState]);
 
+  if (new Date() < new Date("2025-03-01")) {
+    return (
+      <div className="flex flex-col gap-4 pt-20 items-center justify-center pb-20 h-screen">
+        <Image
+          src={"/logo.png"}
+          alt="Streetdreams Logo"
+          width={100}
+          height={100}
+        />
+        <h1 className="text-2xl font-bold">
+          The contest is not currently active.
+        </h1>
+        <h3 className="text-lg">
+          Come back on March 1st to upload photos and vote for your favorite
+          photos!
+        </h3>
+      </div>
+    );
+  }
+
   return (
     <div>
       {isLoading ? (
@@ -46,14 +67,22 @@ export default function Home() {
       ) : user ? (
         <div className="flex flex-col pt-20 items-center h-screen">
           <Progress />
-          <div className="absolute items-center flex gap-2 md:flex-col top-4 right-4">
-            <h1>{user.displayName}</h1>
-            <button
-              className="bg-foreground text-sm text-background rounded-md p-2"
-              onClick={() => signOut(auth)}
-            >
-              Sign out
-            </button>
+          <div className="absolute items-center flex gap-2 justify-between w-full px-8 top-4">
+            <Image
+              src={"/logo.png"}
+              alt="User profile picture"
+              width={40}
+              height={40}
+            />
+            <div className="flex lg:flex-col items-center gap-2">
+              <h1>{user.displayName}</h1>
+              <button
+                className="bg-foreground text-sm text-background rounded-md p-2"
+                onClick={() => signOut(auth)}
+              >
+                Sign out
+              </button>
+            </div>
           </div>
           <Upload voteEnabled={voteState} />
           <Vote voteEnabled={voteState} user={user} />
