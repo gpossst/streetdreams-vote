@@ -14,20 +14,6 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [voteState, setVoteState] = useState(0);
 
-  const getVoteState = () => {
-    const currentDate = new Date();
-    const currentDay = currentDate.getDate();
-
-    if (currentDay >= 1 && currentDay <= 10) {
-      setVoteState(0);
-    } else if (currentDay >= 11 && currentDay <= 25) {
-      setVoteState(1);
-    } else {
-      setVoteState(2);
-    }
-    console.log("vote state: ", voteState);
-  };
-
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
@@ -37,8 +23,21 @@ export default function Home() {
   }, [user]);
 
   useEffect(() => {
+    const getVoteState = () => {
+      const currentDate = new Date();
+      const currentDay = currentDate.getDate();
+
+      if (currentDay >= 1 && currentDay <= 10) {
+        setVoteState(0);
+      } else if (currentDay >= 11 && currentDay <= 25) {
+        setVoteState(1);
+      } else {
+        setVoteState(2);
+      }
+      console.log("vote state: ", voteState);
+    };
     getVoteState();
-  }, []);
+  }, [voteState]);
 
   return (
     <div>

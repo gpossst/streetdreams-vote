@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getTopVotedPhotos, getUserNameById } from "@/utils/firebase";
+import Image from "next/image";
 
 type PhotoData = {
   fileKey: string;
@@ -57,7 +58,7 @@ export default function Results({ voteEnabled }: { voteEnabled: number }) {
     <div className="flex flex-col items-center md: pt-16 sm:pt-3 px-10 py-4">
       <h1 className="text-2xl font-bold pb-4">Results</h1>
       <div className="flex sm:flex-row flex-col gap-4">
-        {[...topVotedPhotos].map(({ photo, votes, userName }, index, array) => {
+        {[...topVotedPhotos].map(({ votes }, index, array) => {
           // Determine display order based on screen size
           const isSmallScreen = window.innerWidth < 640;
           const displayIndex = isSmallScreen
@@ -78,7 +79,14 @@ export default function Results({ voteEnabled }: { voteEnabled: number }) {
                 displayIndex === 0 ? "flex-[3]" : "flex-[2]"
               }`}
             >
-              <img src={item.photo.fileUrl} alt={item.photo.fileName} />
+              <Image
+                src={item.photo.fileUrl}
+                alt={item.photo.fileName}
+                width={500}
+                height={300}
+                style={{ width: "100%", height: "auto", objectFit: "contain" }}
+                priority={displayIndex === 0 || displayIndex === 1}
+              />
               {isWinner ? (
                 <p className="text-xl font-bold text-green-600 mt-2">
                   🏆 Winner! {item.userName}

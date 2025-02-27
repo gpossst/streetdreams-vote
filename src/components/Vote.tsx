@@ -9,17 +9,16 @@ function Vote({ voteEnabled, user }: { voteEnabled: number; user: User }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const fetchVotes = async () => {
-    const votes = await getVotes(user.uid);
-    setVotes(votes || {});
-  };
-
   useEffect(() => {
+    const fetchVotes = async () => {
+      const votes = await getVotes(user.uid);
+      setVotes(votes || {});
+    };
     getMonthPhotos().then((photos) => {
       setPhotos(photos);
     });
     fetchVotes();
-  }, []);
+  }, [user.uid]);
 
   const handleSubmitVotes = async () => {
     setIsSubmitting(true);
