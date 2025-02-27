@@ -40,6 +40,7 @@ const provider = new GoogleAuthProvider();
 export { auth, db, storage };
 
 export const signInWithGoogle = async () => {
+  console.log("signing in with google");
   try {
     // Configure provider to force vt.edu domain
     provider.setCustomParameters({
