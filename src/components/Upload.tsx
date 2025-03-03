@@ -34,7 +34,7 @@ export default function Upload({ voteEnabled }: { voteEnabled: number }) {
 
   const compressImage = async (file: File) => {
     const options = {
-      maxSizeMB: 1, // Max file size in MB
+      maxSizeMB: 4, // Max file size in MB
       maxWidthOrHeight: 1920, // Max width/height in pixels
       useWebWorker: true, // Use web worker for better performance
       fileType: "image/webp", // Convert to WebP
