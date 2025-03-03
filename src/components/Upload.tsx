@@ -83,8 +83,8 @@ export default function Upload({ voteEnabled }: { voteEnabled: number }) {
     <div className="flex items-center bg-background justify-center w-full max-w-md mx-auto p-6 space-y-4">
       {canUpload ? (
         <div className="flex w-full">
-          <label className="bg-foreground cursor-pointer flex hover:bg-[#2A2B32] hover:text-white flex-1 justify-between items-center rounded-l-lg p-4 transition-colors duration-300">
-            <FaCloudUploadAlt className="text-2xl text-background" />
+          <label className="bg-foreground cursor-pointer flex text-background hover:bg-[#2A2B32] hover:text-white flex-1 justify-between items-center rounded-l-lg p-4 transition-colors duration-300">
+            <FaCloudUploadAlt className="text-2xl" />
 
             <input
               type="file"
@@ -93,21 +93,19 @@ export default function Upload({ voteEnabled }: { voteEnabled: number }) {
               className="hidden"
             />
             {file ? (
-              <div className="text-sm flex items-center gap-2 px-4 text-end text-background">
+              <div className="text-sm flex items-center gap-2 px-4 text-end">
                 <div>Selected:</div>
                 <div>{file.name}</div>
               </div>
             ) : (
-              <span className="text-sm text-end text-background">
-                Select a photo
-              </span>
+              <span className="text-sm text-end">Select a photo</span>
             )}
           </label>
 
           <button
             onClick={handleUpload}
             disabled={!file || isCompressing}
-            className="px-6 p-4 bg-foreground text-background rounded-r-lg shadow-md hover:bg-[#2A2B32] disabled:cursor-not-allowed transition-colors duration-300"
+            className="px-6 p-4 bg-foreground text-background rounded-r-lg shadow-md hover:bg-[#2A2B32] hover:text-white disabled:cursor-not-allowed transition-colors duration-300"
           >
             {isCompressing ? "Compressing..." : "Upload"}
           </button>
