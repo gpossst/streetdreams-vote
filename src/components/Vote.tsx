@@ -47,7 +47,7 @@ function Vote({ voteEnabled, user }: { voteEnabled: number; user: User }) {
       </div>
       {Object.keys(votes).length > 0 && voteEnabled === 1 && (
         <button
-          className="absolute shadow-lg hover:bg-[#CC444B] hover:text-foreground transition-all duration-300 bottom-8 left-1/2 transform -translate-x-1/2 bg-foreground text-background rounded-lg p-2 items-center justify-center"
+          className="fixed shadow-lg hover:bg-[#CC444B] hover:text-foreground transition-all duration-300 bottom-8 left-1/2 transform -translate-x-1/2 bg-foreground text-background rounded-lg p-2 items-center justify-center"
           onClick={handleSubmitVotes}
           disabled={isSubmitting}
         >
