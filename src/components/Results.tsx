@@ -64,9 +64,11 @@ export default function Results({ voteEnabled }: { voteEnabled: number }) {
           const displayIndex = isSmallScreen
             ? index
             : index === 0
-            ? 1
-            : index === 1
             ? 0
+            : index === 1
+            ? 1
+            : index === 2
+            ? 2
             : index;
           const item = array[displayIndex];
 
